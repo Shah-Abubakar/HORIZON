@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Horizon — Student Founder Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .phone-mock {
+            width: 390px; height: 844px;
+            background: #000;
+            border-radius: 44px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        }
+        .app-container {
+            width: 100%; height: 100%;
+            background: linear-gradient(180deg, #0f0f0f 0%, #080808 100%);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            height: 64px;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(15,15,15,0.95);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            flex-shrink: 0;
+        }
+        .menu-button, .notif-button {
+            width: 40px; height: 40px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            color: #aaa;
+            transition: all 0.2s;
+        }
+        .logo-area { display: flex; align-items: center; gap: 10px; }
+        .logo-icon {
+            width: 32px; height: 32px;
+            background: linear-gradient(135deg, #8AE3FF, #FFB86B);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; color: #000;
+        }
+        .logo-text { font-size: 18px; font-weight: 600; color: white; }
+
+        /* Drawer */
+        .drawer-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            opacity: 0; visibility: hidden;
+            transition: all 0.3s;
+            z-index: 90;
+        }
+        .drawer-overlay.open { opacity: 1; visibility: visible; }
+        .side-drawer {
+            position: absolute; top: 0; left: -280px;
+            width: 280px; height: 100%;
+            background: linear-gradient(180deg, #141414 0%, #0c0c0c 100%);
+            z-index: 100;
+            transition: left 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            padding: 24px 20px;
+        }
+        .side-drawer.open { left: 0; }
+        .drawer-header {
+            display: flex; align-items: center; gap: 14px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            margin-bottom: 20px;
+        }
+        .drawer-avatar {
+            width: 52px; height: 52px;
+            background: linear-gradient(135deg, #8AE3FF, #FFB86B);
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: 700; color: #000;
+        }
+        .drawer-user-info { flex: 1; }
+        .drawer-name { font-size: 15px; font-weight: 600; color: white; margin-bottom: 3px; }
+        .drawer-email { font-size: 11px; color: #777; }
+        .drawer-nav { display: flex; flex-direction: column; gap: 4px; }
+        .nav-item {
+            display: flex; align-items: center;
+            padding: 11px 14px;
+            color: #999; text-decoration: none;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.15s;
+        }
+        .nav-item:hover { background: rgba(138,227,255,0.06); color: white; }
+        .nav-item.active-nav { background: rgba(138,227,255,0.1); color: #8AE3FF; font-weight: 500; }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px 80px;
+        }
+        .main-content::-webkit-scrollbar { width: 4px; }
+        .main-content::-webkit-scrollbar-thumb { background: rgba(138,227,255,0.15); border-radius: 4px; }
+        .screen { display: none; animation: fadeIn 0.3s ease; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Search Bar */
+        .search-bar { margin-bottom: 14px; }
+        .search-bar input {
+            width: 100%; padding: 13px 16px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px; color: white; font-size: 14px;
+        }
+        .search-bar input::placeholder { color: #555; }
+
+        /* Filter Chips */
+        .filter-chips { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 16px; }
+        .filter-chips::-webkit-scrollbar { display: none; }
+        .chip {
+            padding: 7px 14px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            font-size: 12px; color: #999;
+            cursor: pointer; white-space: nowrap;
+        }
+        .chip.active { background: rgba(138,227,255,0.12); color: #8AE3FF; border-color: rgba(138,227,255,0.25); }
+
+        /* Person Cards */
+        .people-list { display: flex; flex-direction: column; gap: 10px; }
+        .person-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 14px;
+            padding: 13px;
+            display: flex; align-items: center; gap: 12px;
+            transition: all 0.15s;
+            cursor: pointer;
+        }
+        .person-card:hover { background: rgba(255,255,255,0.04); }
+        .person-avatar {
+            width: 46px; height: 46px;
+            background: linear-gradient(135deg, rgba(138,227,255,0.12), rgba(255,184,107,0.06));
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; color: white; font-size: 14px;
+            flex-shrink: 0;
+        }
+        .person-info { flex: 1; min-width: 0; }
+        .person-name { font-weight: 600; color: white; font-size: 14px; margin-bottom: 2px; }
+        .person-bio { font-size: 12px; color: #888; margin-bottom: 2px; }
+        .person-college { font-size: 10px; color: #666; }
+        .connect-btn {
+            padding: 7px 14px;
+            background: linear-gradient(90deg, #8AE3FF, #FFB86B);
+            border: none; border-radius: 10px;
+            font-size: 11px; font-weight: 600; color: #000;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .connect-btn:disabled { opacity: 0.5; cursor: default; }
+        .match-score { font-size: 11px; margin-left: 8px; }
+        .match-reason { font-size: 10px; color: #8AE3FF; margin-top: 2px; }
+
+        /* Cards */
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .section-header h2 { font-size: 16px; font-weight: 600; color: white; }
+        .see-all { font-size: 12px; color: #8AE3FF; background: none; border: none; cursor: pointer; }
+        .card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 10px;
+        }
+        .card h3 { font-size: 14px; font-weight: 600; color: white; margin-bottom: 4px; }
+        .card p { font-size: 12px; color: #888; margin-bottom: 10px; }
+        .card-tags { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+        .card-tags span { background: rgba(255,255,255,0.05); padding: 3px 10px; border-radius: 16px; font-size: 11px; color: #999; }
+        .apply-btn {
+            padding: 8px 16px;
+            background: linear-gradient(90deg, #8AE3FF, #FFB86B);
+            border: none; border-radius: 10px;
+            font-size: 12px; font-weight: 600; color: #000;
+            cursor: pointer;
+        }
+
+        /* Profile */
+        .profile-cover { height: 110px; border-radius: 0 0 28px 28px; background: linear-gradient(135deg, #0d1b2a 0%, #1b2838 40%, #0d1117 100%); margin: -16px -20px 0; position: relative; overflow: hidden; }
+        .profile-cover-gradient { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(138,227,255,0.12) 0%, rgba(255,184,107,0.06) 50%, transparent 100%); }
+        .profile-identity { display: flex; flex-direction: column; align-items: center; padding: 0 20px 24px; margin-top: -44px; position: relative; z-index: 2; }
+        .profile-avatar-wrap { position: relative; margin-bottom: 14px; }
+        .profile-avatar-large { width: 88px; height: 88px; background: linear-gradient(135deg, #8AE3FF, #FFB86B); border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; color: #000; position: relative; z-index: 2; box-shadow: 0 8px 32px rgba(138,227,255,0.18), 0 0 0 3px rgba(138,227,255,0.08); }
+        .profile-avatar-ring { position: absolute; inset: -4px; border-radius: 28px; border: 2px solid rgba(138,227,255,0.15); z-index: 1; }
+        .profile-identity h2 { font-size: 22px; font-weight: 700; color: white; margin-bottom: 4px; }
+        .profile-tagline { font-size: 13px; color: #777; margin-bottom: 18px; }
+        .profile-edit-main-btn { display: flex; align-items: center; gap: 7px; padding: 10px 22px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; font-size: 13px; font-weight: 600; color: #ccc; cursor: pointer; transition: all 0.2s; }
+        .profile-edit-main-btn:hover { background: rgba(138,227,255,0.1); border-color: rgba(138,227,255,0.25); color: #8AE3FF; }
+        .profile-edit-main-btn.active { background: rgba(138,227,255,0.15); border-color: #8AE3FF; color: #8AE3FF; }
+        .profile-block { padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .profile-block:last-of-type { border-bottom: none; }
+        .profile-block-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .profile-block-label span { font-size: 11px; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: 0.8px; }
+        .profile-inline-edit { font-size: 12px; font-weight: 500; color: #8AE3FF; background: none; border: none; cursor: pointer; padding: 4px 10px; border-radius: 8px; transition: all 0.15s; opacity: 0; pointer-events: none; }
+        .profile-inline-edit:hover { background: rgba(138,227,255,0.1); }
+        .profile-block:hover .profile-inline-edit, .profile-inline-edit:focus { opacity: 1; pointer-events: auto; }
+        .profile-edit-mode .profile-inline-edit { opacity: 1; pointer-events: auto; }
+        .profile-block-text { font-size: 14px; color: #bbb; line-height: 1.6; }
+        .skills-list { display: flex; flex-wrap: wrap; gap: 8px; }
+        .skill-pill { background: rgba(138,227,255,0.08); padding: 6px 14px; border-radius: 20px; font-size: 12px; color: #8AE3FF; border: 1px solid rgba(138,227,255,0.12); }
+        .skill-pill-empty { opacity: 0.4; border-style: dashed; }
+        .projects-list { display: flex; flex-direction: column; gap: 10px; }
+        .project-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; padding: 14px; }
+        .project-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .project-title { font-size: 14px; font-weight: 600; color: white; }
+        .delete-project-btn { background: rgba(255,107,107,0.08); border: none; color: #ff6b6b; cursor: pointer; width: 22px; height: 22px; border-radius: 6px; font-size: 11px; }
+        .project-description { font-size: 12px; color: #999; margin-bottom: 8px; line-height: 1.5; }
+        .project-link { display: inline-block; font-size: 11px; color: #8AE3FF; text-decoration: none; margin-right: 12px; margin-bottom: 6px; }
+        .project-tech { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+        .tech-tag { background: rgba(255,255,255,0.04); padding: 2px 9px; border-radius: 10px; font-size: 10px; color: #888; }
+        .empty-projects { text-align: center; padding: 24px; color: #555; font-size: 13px; }
+
+        /* Modals */
+        .prof-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
+        .prof-modal-overlay.open { display: flex; }
+        .prof-modal { background: linear-gradient(180deg, #161616 0%, #0e0e0e 100%); border: 1px solid rgba(138,227,255,0.1); border-radius: 22px; padding: 24px; width: 92%; max-width: 100%; max-height: 90vh; overflow-y: auto; animation: profModalIn 0.25s ease; }
+        @keyframes profModalIn { from { opacity:0; transform:translateY(16px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+        .prof-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+        .prof-modal-header h3 { font-size: 17px; font-weight: 700; color: white; }
+        .prof-modal-close { background: rgba(255,255,255,0.06); border: none; color: #888; width: 30px; height: 30px; border-radius: 8px; font-size: 18px; cursor: pointer; }
+        .prof-modal-close:hover { background: rgba(255,255,255,0.12); color: white; }
+        .prof-modal textarea, .prof-modal input { width: 100%; padding: 12px 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: white; font-size: 13px; font-family: inherit; outline: none; margin-bottom: 8px; }
+        .prof-modal textarea:focus, .prof-modal input:focus { border-color: #8AE3FF; }
+        .prof-modal textarea::placeholder, .prof-modal input::placeholder { color: #555; }
+        .prof-skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 8px; }
+        .prof-skill-opt { display: flex; align-items: center; gap: 10px; padding: 11px 14px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; cursor: pointer; transition: all 0.15s; font-size: 13px; color: #bbb; }
+        .prof-skill-opt:hover { background: rgba(138,227,255,0.06); border-color: rgba(138,227,255,0.15); }
+        .prof-skill-opt:has(input:checked) { background: rgba(138,227,255,0.1); border-color: #8AE3FF; color: #8AE3FF; }
+        .prof-skill-opt input { display: none; }
+        .prof-skill-opt > span:first-of-type { font-size: 16px; }
+        .prof-looking-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+        .prof-look-opt { display: flex; align-items: center; gap: 12px; padding: 13px 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; cursor: pointer; transition: all 0.15s; }
+        .prof-look-opt:hover { background: rgba(138,227,255,0.05); border-color: rgba(138,227,255,0.15); }
+        .prof-look-opt:has(input:checked) { background: rgba(138,227,255,0.1); border-color: #8AE3FF; }
+        .prof-look-opt input { display: none; }
+        .prof-look-icon { font-size: 20px; width: 28px; text-align: center; }
+        .prof-look-label { font-size: 13px; color: #bbb; }
+        .prof-modal-footer { display: flex; gap: 10px; margin-top: 20px; }
+        .prof-btn { flex: 1; padding: 12px; border: none; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+        .prof-btn-primary { background: linear-gradient(135deg, #8AE3FF, #FFB86B); color: #000; }
+        .prof-btn-primary:hover { box-shadow: 0 4px 16px rgba(138,227,255,0.2); transform: translateY(-1px); }
+        .prof-btn-ghost { background: rgba(255,255,255,0.06); color: #999; }
+        .prof-btn-ghost:hover { background: rgba(255,255,255,0.1); color: white; }
+
+        /* Score */
+        .score-card { background: linear-gradient(135deg, rgba(138,227,255,0.06), rgba(255,184,107,0.03)); border: 1px solid rgba(138,227,255,0.08); border-radius: 20px; padding: 28px 20px; text-align: center; margin-bottom: 14px; }
+        .score-number { font-size: 56px; font-weight: 800; color: white; margin-bottom: 16px; }
+        .progress-bar { width: 100%; height: 6px; background: rgba(255,255,255,0.06); border-radius: 8px; overflow: hidden; margin-bottom: 10px; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #8AE3FF, #FFB86B); border-radius: 8px; transition: width 0.3s; }
+        .score-stats { display: flex; gap: 12px; }
+        .score-stat { flex: 1; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 12px; padding: 12px; text-align: center; }
+
+        /* Leaderboard */
+        .leaderboard-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 12px; margin-bottom: 8px; }
+        .rank-num { font-size: 20px; width: 44px; color: #888; }
+        .rank-info { flex: 1; }
+        .rank-info strong { display: block; color: white; font-size: 14px; }
+        .rank-info span { font-size: 11px; color: #888; }
+        .rank-score { font-weight: 700; color: #8AE3FF; font-size: 14px; }
+
+        /* Settings */
+        .setting-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 12px; margin-bottom: 8px; color: white; font-size: 14px; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.15); transition: 0.3s; border-radius: 22px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: 0.3s; border-radius: 50%; }
+        input:checked + .slider { background: linear-gradient(90deg, #8AE3FF, #FFB86B); }
+        input:checked + .slider:before { transform: translateX(22px); }
+        .logout-btn { width: 100%; padding: 13px; background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.2); border-radius: 12px; font-size: 14px; font-weight: 600; color: #ff6b6b; cursor: pointer; margin-top: 16px; }
+
+        /* FAB */
+        .fab-button { position: absolute; bottom: 16px; right: 16px; width: 52px; height: 52px; background: linear-gradient(135deg, #8AE3FF, #FFB86B); border: none; border-radius: 16px; font-size: 26px; font-weight: 600; color: #000; cursor: pointer; z-index: 80; }
+
+        /* Login */
+        .login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 40px; text-align: center; }
+        .login-screen.hidden { display: none !important; }
+
+        /* Spinner */
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Onboarding */
+        .onboarding-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.88); z-index: 500; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        .onboarding-overlay.active { display: flex; }
+        .onboarding-modal { width: 330px; background: linear-gradient(180deg, #161616 0%, #0e0e0e 100%); border: 1px solid rgba(138,227,255,0.12); border-radius: 24px; padding: 28px 24px; text-align: center; animation: onboardIn 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1); }
+        @keyframes onboardIn { from { opacity:0; transform:translateY(24px) scale(0.96); } to { opacity:1; transform:translateY(0) scale(1); } }
+        .onboarding-step { display: none; }
+        .onboarding-step.active { display: block; }
+        .onboarding-step h3 { color: white; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+        .onboarding-step p { color: #888; font-size: 12px; margin-bottom: 20px; }
+        .onboarding-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+        .onboarding-option { padding: 12px 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; color: #bbb; font-size: 13px; cursor: pointer; transition: all 0.15s; text-align: left; display: flex; align-items: center; gap: 10px; }
+        .onboarding-option:hover { background: rgba(138,227,255,0.08); border-color: rgba(138,227,255,0.2); color: white; }
+        .onboarding-option.selected { background: rgba(138,227,255,0.12); border-color: #8AE3FF; color: #8AE3FF; }
+        .onboarding-option .opt-icon { font-size: 18px; width: 24px; text-align: center; }
+        .onboarding-input { width: 100%; padding: 13px 16px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: white; font-size: 14px; margin-bottom: 16px; outline: none; }
+        .onboarding-input:focus { border-color: #8AE3FF; }
+        .onboarding-input::placeholder { color: #555; }
+        .onboarding-next { width: 100%; padding: 13px; background: linear-gradient(90deg, #8AE3FF, #FFB86B); border: none; border-radius: 12px; font-size: 14px; font-weight: 700; color: #000; cursor: pointer; transition: all 0.15s; }
+        .onboarding-next:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(138,227,255,0.15); }
+        .onboarding-next:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
+        .onboarding-skip { background: none; border: none; color: #555; font-size: 11px; cursor: pointer; margin-top: 12px; text-decoration: underline; }
+        .onboarding-skip:hover { color: #888; }
+        .onboarding-progress { display: flex; gap: 5px; justify-content: center; margin-bottom: 20px; }
+        .onboarding-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.12); transition: all 0.25s; }
+        .onboarding-dot.active { background: #8AE3FF; width: 20px; border-radius: 4px; }
+        .onboarding-dot.done { background: #34A853; }
+        .onboarding-back { background: none; border: none; color: #777; font-size: 12px; cursor: pointer; margin-bottom: 12px; }
+        .onboarding-back:hover { color: white; }
+
+
+    </style>
+</head>
+<body>
+    <div class="phone-mock">
+        <div class="app-container">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <button class="menu-button" id="menuBtn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <div class="logo-area">
+                    <div class="logo-icon">H</div>
+                    <span class="logo-text">Horizon</span>
+                </div>
+                <button class="notif-button" id="notifBtn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                </button>
+            </div>
+
+            <!-- Drawer -->
+            <div class="drawer-overlay" id="drawerOverlay"></div>
+            <div class="side-drawer" id="sideDrawer">
+                <div class="drawer-header">
+                    <div class="drawer-avatar" id="drawerAvatar">U</div>
+                    <div class="drawer-user-info">
+                        <div class="drawer-name" id="drawerName">Student</div>
+                        <div class="drawer-email" id="drawerEmail">Loading...</div>
+                    </div>
+                </div>
+                <nav class="drawer-nav">
+                    <a href="#" data-screen="discover" class="nav-item active-nav">Discover</a>
+                    <a href="#" data-screen="startups" class="nav-item">Startups</a>
+                    <a href="#" data-screen="collabs" class="nav-item">Collaborations</a>
+                    <a href="#" data-screen="chats" class="nav-item">Messages</a>
+                    <a href="#" data-screen="opps" class="nav-item">Opportunities</a>
+                    <a href="#" data-screen="score" class="nav-item">Horizon Score</a>
+                    <a href="#" data-screen="leaderboards" class="nav-item">Leaderboard</a>
+                    <a href="#" data-screen="profile" class="nav-item">Profile</a>
+                    <a href="#" data-screen="settings" class="nav-item">Settings</a>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content" id="mainContent">
+
+                <!-- LOGIN SCREEN -->
+                <div id="loginScreen" class="screen login-screen">
+                    <div style="width:72px;height:72px;background:linear-gradient(135deg,#8AE3FF,#FFB86B);border-radius:18px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+                        <span style="font-size:34px;font-weight:700;color:#000;">H</span>
+                    </div>
+                    <h2 style="color:white;font-size:22px;font-weight:700;margin-bottom:8px;">Welcome to Horizon</h2>
+                    <p style="color:#888;font-size:13px;margin-bottom:28px;line-height:1.5;">Connect with student founders<br>and build the future together</p>
+                    <button id="googleSignInBtn" style="background:white;border:none;padding:13px 22px;border-radius:28px;display:flex;align-items:center;gap:10px;cursor:pointer;font-weight:600;font-size:14px;margin:0 auto;box-shadow:0 4px 14px rgba(0,0,0,0.2);transition:all 0.2s;">
+                        <svg width="18" height="18" viewBox="0 0 24 24">
+                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                        </svg>
+                        Continue with Google
+                    </button>
+                    <p style="color:#555;font-size:10px;margin-top:14px;">Secure sign-in powered by Supabase</p>
+                </div>
+
+                <!-- AUTHENTICATED CONTENT -->
+                <div id="authenticatedContent" style="display:none;">
+
+                    <!-- Discover (default) -->
+                    <div class="screen active" id="discoverScreen">
+                        <div class="search-bar">
+                            <input type="text" id="searchInput" placeholder="Search builders, skills, startups...">
+                        </div>
+                        <div class="filter-chips" id="filterChips">
+                            <button class="chip active" data-filter="All">All</button>
+                            <button class="chip" data-filter="Developer">Developer</button>
+                            <button class="chip" data-filter="Designer">Designer</button>
+                            <button class="chip" data-filter="Marketing">Marketing</button>
+                            <button class="chip" data-filter="AI">AI/ML</button>
+                            <button class="chip" data-filter="Business">Business</button>
+                        </div>
+                        <div class="people-list" id="peopleList">
+                            <div style="text-align:center;padding:30px;color:#666;font-size:13px;">Loading matches...</div>
+                        </div>
+                    </div>
+
+                          <!-- Startups -->
+<div class="screen" id="startupsScreen">
+    <button class="create-startup-btn" id="createStartupBtn">+ Create New Startup</button>
+    
+    <!-- SEARCH BAR -->
+    <div class="search-startup-container">
+        <div class="search-wrapper">
+            <input type="text" id="startupSearchInput" class="search-startup-box" placeholder="Search everything">
+            <button class="clear-search-btn" id="clearStartupSearch">✕</button>
+        </div>
+        <div class="search-stats" id="startupSearchStats">0 startups available</div>
+    </div>
+    
+    <div class="startups-list" id="startupsList">
+        <div style="text-align:center;padding:30px;color:#666;font-size:13px;">Loading startups...</div>
+    </div>
+</div>
+
+                    <!-- Collaborations -->
+                    <div class="screen" id="collabsScreen">
+                        <div class="card">
+                            <h3>Looking for Flutter Developer</h3>
+                            <p>Orb · Remote · Equity</p>
+                            <div class="card-tags"><span>Flutter</span><span>Dart</span><span>Firebase</span></div>
+                            <button class="apply-btn">Apply</button>
+                        </div>
+                        <div class="card">
+                            <h3>Marketing Intern Needed</h3>
+                            <p>Nova Labs · Delhi · Stipend</p>
+                            <div class="card-tags"><span>Social Media</span><span>Content</span><span>SEO</span></div>
+                            <button class="apply-btn">Apply</button>
+                        </div>
+                    </div>
+
+                    <!-- Chats -->
+                    <div class="screen" id="chatsScreen">
+                        <div class="person-card">
+                            <div class="person-avatar">AR</div>
+                            <div class="person-info">
+                                <div class="person-name">Arun R</div>
+                                <div class="person-bio">Let's ship the payments flow by Friday!</div>
+                            </div>
+                            <span style="font-size:11px;color:#666;">2h</span>
+                        </div>
+                        <div class="person-card">
+                            <div class="person-avatar">MS</div>
+                            <div class="person-info">
+                                <div class="person-name">Maria S</div>
+                                <div class="person-bio">Hey! I saw your post about needing a designer...</div>
+                            </div>
+                            <span style="font-size:11px;color:#666;">1d</span>
+                        </div>
+                    </div>
+
+                    <!-- Opportunities -->
+                    <div class="screen" id="oppsScreen">
+                        <div class="card">
+                            <h3>Hack the Campus — 48h</h3>
+                            <p>$5,000 Prize · Jun 20, 2026</p>
+                            <button class="apply-btn">Register</button>
+                        </div>
+                        <div class="card">
+                            <h3>Startup India Seed Fund</h3>
+                            <p>Up to ₹20 Lakhs · Jul 15, 2026</p>
+                            <button class="apply-btn">Apply</button>
+                        </div>
+                    </div>
+
+                    <!-- Score -->
+                    <div class="screen" id="scoreScreen">
+                        <div class="score-card">
+                            <div class="score-number" id="detailScore">0</div>
+                            <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+                            <p style="font-size:12px;color:#888;">0% to Level 1 Founder</p>
+                        </div>
+                        <div class="score-stats">
+                            <div class="score-stat"><div class="stat-label">This Week</div><div class="stat-value" id="weeklyPoints">0 pts</div></div>
+                            <div class="score-stat"><div class="stat-label">Next Reward</div><div class="stat-value">First Badge</div></div>
+                        </div>
+                    </div>
+
+                    <!-- Leaderboard -->
+                    <div class="screen" id="leaderboardsScreen">
+                        <div class="leaderboard-item"><div class="rank-num">1</div><div class="rank-info"><strong>Arun R</strong><span>Full-stack Dev</span></div><div class="rank-score">1,820</div></div>
+                        <div class="leaderboard-item"><div class="rank-num">2</div><div class="rank-info"><strong>Maria S</strong><span>UI/UX Designer</span></div><div class="rank-score">1,540</div></div>
+                        <div class="leaderboard-item"><div class="rank-num">3</div><div class="rank-info"><strong>Hazel Founder</strong><span>Product Lead</span></div><div class="rank-score">1,240</div></div>
+                    </div>
+
+                    <!-- Profile Screen -->
+                    <div class="screen" id="profileScreen">
+                        <div class="profile-cover"><div class="profile-cover-gradient"></div></div>
+                        <div class="profile-identity">
+                            <div class="profile-avatar-wrap">
+                                <div class="profile-avatar-large" id="profileAvatar">U</div>
+                                <div class="profile-avatar-ring"></div>
+                            </div>
+                            <h2 id="profileName">Loading...</h2>
+                            <p class="profile-tagline" id="profileEmail">loading@email.com</p>
+                            <button class="profile-edit-main-btn" id="profileToggleEdit">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                Edit Profile
+                            </button>
+                        </div>
+                        <div class="profile-block" id="bioBlock">
+                            <div class="profile-block-label"><span>About</span><button class="profile-inline-edit" data-edit="bio">Edit</button></div>
+                            <p class="profile-block-text" id="bioText">No bio yet. Click Edit Profile to add one.</p>
+                        </div>
+                        <div class="profile-block" id="skillsBlock">
+                            <div class="profile-block-label"><span>Skills</span><button class="profile-inline-edit" data-edit="skills">Edit</button></div>
+                            <div class="skills-list" id="skillsList"><span class="skill-pill skill-pill-empty">No skills added yet</span></div>
+                        </div>
+                        <div class="profile-block" id="lookingBlock">
+                            <div class="profile-block-label"><span>Looking For</span><button class="profile-inline-edit" data-edit="looking">Edit</button></div>
+                            <p class="profile-block-text" id="lookingText">Not specified</p>
+                        </div>
+                        <div class="profile-block" id="projectsBlock">
+                            <div class="profile-block-label"><span>Projects</span><button class="profile-inline-edit" data-edit="projects">Add</button></div>
+                            <div class="projects-list" id="projectsList"><div class="empty-projects">No projects yet</div></div>
+                        </div>
+                    </div>
+
+                    <!-- Edit Bio Modal -->
+                    <div class="prof-modal-overlay" id="bioModal">
+                        <div class="prof-modal">
+                            <div class="prof-modal-header"><h3>Edit Bio</h3><button class="prof-modal-close" data-close="bio">&times;</button></div>
+                            <textarea id="bioInput" rows="5" placeholder="Tell others about yourself..."></textarea>
+                            <div class="prof-modal-footer"><button class="prof-btn prof-btn-primary" id="saveBioBtn">Save Changes</button><button class="prof-btn prof-btn-ghost" data-close="bio">Cancel</button></div>
+                        </div>
+                    </div>
+
+                    <!-- Edit Skills Modal -->
+                    <div class="prof-modal-overlay" id="skillsModal">
+                        <div class="prof-modal">
+                            <div class="prof-modal-header"><h3>Edit Skills</h3><button class="prof-modal-close" data-close="skills">&times;</button></div>
+                            <p class="prof-modal-hint"></p>
+                            <div class="prof-skills-grid" id="skillsCheckboxes">
+                                <label class="prof-skill-opt"><input type="checkbox" value="Developer"><span></span> Developer</label>
+                                <label class="prof-skill-opt"><input type="checkbox" value="Designer"><span></span> Designer</label>
+                                <label class="prof-skill-opt"><input type="checkbox" value="Product"><span></span> Product</label>
+                                <label class="prof-skill-opt"><input type="checkbox" value="Marketing"><span></span> Marketing</label>
+                                <label class="prof-skill-opt"><input type="checkbox" value="Business"><span></span> Business</label>
+                                <label class="prof-skill-opt"><input type="checkbox" value="AI/ML"><span></span> AI/ML</label>
+                                <label class="prof-skill-opt"><input type="checkbox" value="Blockchain"><span></span> Blockchain</label>
+                                <label class="prof-skill-opt"><input type="checkbox" value="Data Science"><span></span> Data Science</label>
+                                <label class="prof-skill-opt"><input type="checkbox" value="DevOps"><span></span> DevOps</label>
+                                <label class="prof-skill-opt"><input type="checkbox" value="UI/UX"><span></span> UI/UX</label>
+                            </div>
+                            <div class="prof-modal-footer"><button class="prof-btn prof-btn-primary" id="saveSkillsBtn">Save Skills</button><button class="prof-btn prof-btn-ghost" data-close="skills">Cancel</button></div>
+                        </div>
+                    </div>
+
+                    <!-- Edit Looking For Modal -->
+                    <div class="prof-modal-overlay" id="lookingModal">
+                        <div class="prof-modal">
+                            <div class="prof-modal-header"><h3>What are you looking for?</h3><button class="prof-modal-close" data-close="looking">&times;</button></div>
+                            <div class="prof-looking-list" id="lookingOptions">
+                                <label class="prof-look-opt"><input type="radio" name="looking" value="Find co-founder"><span class="prof-look-icon"></span><span class="prof-look-label">Find a co-founder</span></label>
+                                <label class="prof-look-opt"><input type="radio" name="looking" value="Join startup"><span class="prof-look-icon"></span><span class="prof-look-label">Join a startup</span></label>
+                                <label class="prof-look-opt"><input type="radio" name="looking" value="Recruit members"><span class="prof-look-icon"></span><span class="prof-look-label">Recruit team members</span></label>
+                                <label class="prof-look-opt"><input type="radio" name="looking" value="Find mentorship"><span class="prof-look-icon"></span><span class="prof-look-label">Find mentorship</span></label>
+                                <label class="prof-look-opt"><input type="radio" name="looking" value="Just exploring"><span class="prof-look-icon"></span><span class="prof-look-label">Just exploring</span></label>
+                            </div>
+                            <div class="prof-modal-footer"><button class="prof-btn prof-btn-primary" id="saveLookingBtn">Save</button><button class="prof-btn prof-btn-ghost" data-close="looking">Cancel</button></div>
+                        </div>
+                    </div>
+
+                    <!-- Add Project Modal -->
+                    <div class="prof-modal-overlay" id="projectModal">
+                        <div class="prof-modal">
+                            <div class="prof-modal-header"><h3>Add Project</h3><button class="prof-modal-close" data-close="project">&times;</button></div>
+                            <div class="prof-form-group"><label class="prof-label"></label><input type="text" id="projectTitle" placeholder="e.g. Nova Payments" class="prof-input"></div>
+                            <div class="prof-form-group"><label class="prof-label"></label><textarea id="projectDesc" rows="3" placeholder="What does it do?" class="prof-input"></textarea></div>
+                            <div class="prof-form-group"><label class="prof-label"></label><input type="text" id="projectTech" placeholder="React, Python, Firebase..." class="prof-input"></div>
+                            <div class="prof-form-group"><label class="prof-label"></label><input type="url" id="projectLive" placeholder="https://..." class="prof-input"></div>
+                            <div class="prof-form-group"><label class="prof-label"></label><input type="url" id="projectGithub" placeholder="https://github.com/..." class="prof-input"></div>
+                            <div class="prof-modal-footer"><button class="prof-btn prof-btn-primary" id="saveProjectBtn">Add Project</button><button class="prof-btn prof-btn-ghost" data-close="project">Cancel</button></div>
+                        </div>
+                    </div>
+
+                    <!-- Settings -->
+                    <div class="screen" id="settingsScreen">
+                        <div class="setting-item"><span>Push Notifications</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+                        <div class="setting-item"><span>Dark Mode</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+                        <button id="logoutBtn" class="logout-btn">Sign Out</button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="fab-button" id="fabBtn">+</button>
+
+            <!-- ONBOARDING OVERLAY -->
+            <div class="onboarding-overlay" id="onboardingOverlay">
+                <div class="onboarding-modal">
+                    <div class="onboarding-step active" data-step="0">
+                        <div class="onboarding-progress"><div class="onboarding-dot active"></div><div class="onboarding-dot"></div><div class="onboarding-dot"></div><div class="onboarding-dot"></div></div>
+                        <h3>Welcome! What's your name?</h3>
+                        <p>Pick a display name for your Horizon profile</p>
+                        <input type="text" class="onboarding-input" id="onboardName" placeholder="e.g. Alex Chen" autocomplete="name">
+                        <button class="onboarding-next" id="onboardNameNext" disabled>Continue</button>
+                        <br><button class="onboarding-skip" id="onboardSkip0">Skip for now</button>
+                    </div>
+                    <div class="onboarding-step" data-step="1">
+                        <div class="onboarding-progress"><div class="onboarding-dot done"></div><div class="onboarding-dot active"></div><div class="onboarding-dot"></div><div class="onboarding-dot"></div></div>
+                        <button class="onboarding-back" id="onboardBack1">Back</button>
+                        <h3>What's your primary skill area?</h3>
+                        <p>We'll personalize your experience based on this</p>
+                        <div class="onboarding-options" id="skillOptions">
+                            <div class="onboarding-option" data-value="Developer"><span class="opt-icon"></span> Developer / Engineer</div>
+                            <div class="onboarding-option" data-value="Designer"><span class="opt-icon"></span> Designer / UI-UX</div>
+                            <div class="onboarding-option" data-value="Product"><span class="opt-icon"></span> Product / Management</div>
+                            <div class="onboarding-option" data-value="Marketing"><span class="opt-icon"></span> Marketing / Growth</div>
+                            <div class="onboarding-option" data-value="Business"><span class="opt-icon"></span> Business / Operations</div>
+                            <div class="onboarding-option" data-value="Exploring"><span class="opt-icon"></span> Still exploring</div>
+                        </div>
+                        <button class="onboarding-next" id="onboardSkillNext" disabled>Continue</button>
+                        <br><button class="onboarding-skip" id="onboardSkip1">Skip for now</button>
+                    </div>
+                    <div class="onboarding-step" data-step="2">
+                        <div class="onboarding-progress"><div class="onboarding-dot done"></div><div class="onboarding-dot done"></div><div class="onboarding-dot active"></div><div class="onboarding-dot"></div></div>
+                        <button class="onboarding-back" id="onboardBack2">Back</button>
+                        <h3>What are you looking for on Horizon?</h3>
+                        <p>Select the option that best describes your goal</p>
+                        <div class="onboarding-options" id="goalOptions">
+                            <div class="onboarding-option" data-value="Find co-founder"><span class="opt-icon"></span> Find a co-founder</div>
+                            <div class="onboarding-option" data-value="Join startup"><span class="opt-icon"></span> Join a startup</div>
+                            <div class="onboarding-option" data-value="Recruit members"><span class="opt-icon"></span> Recruit team members</div>
+                            <div class="onboarding-option" data-value="Find mentorship"><span class="opt-icon"></span> Find mentorship</div>
+                            <div class="onboarding-option" data-value="Just exploring"><span class="opt-icon"></span> Just exploring</div>
+                        </div>
+                        <button class="onboarding-next" id="onboardGoalNext" disabled>Continue</button>
+                        <br><button class="onboarding-skip" id="onboardSkip2">Skip for now</button>
+                    </div>
+                    <div class="onboarding-step" data-step="3">
+                        <div class="onboarding-progress"><div class="onboarding-dot done"></div><div class="onboarding-dot done"></div><div class="onboarding-dot done"></div><div class="onboarding-dot active"></div></div>
+                        <button class="onboarding-back" id="onboardBack3">Back</button>
+                        <h3>What stage is your startup at?</h3>
+                        <p>Be honest — this helps us match you with the right people</p>
+                        <div class="onboarding-options" id="stageOptions">
+                            <div class="onboarding-option" data-value="Just an idea"><span class="opt-icon"></span> Just an idea</div>
+                            <div class="onboarding-option" data-value="Building MVP"><span class="opt-icon"></span> Building MVP</div>
+                            <div class="onboarding-option" data-value="Launched"><span class="opt-icon"></span> Launched with users</div>
+                            <div class="onboarding-option" data-value="Revenue"><span class="opt-icon"></span> Revenue generating</div>
+                            <div class="onboarding-option" data-value="Not started"><span class="opt-icon"></span> Haven't started yet</div>
+                        </div>
+                        <button class="onboarding-next" id="onboardStageNext" disabled>Finish Setup</button>
+                        <br><button class="onboarding-skip" id="onboardSkip3">Skip for now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="firestoreStatus" style="position:fixed;top:8px;right:8px;padding:4px 10px;border-radius:8px;font-size:10px;font-weight:600;z-index:9999;background:rgba(255,255,255,0.08);color:#888;display:flex;align-items:center;gap:5px;"><span style="width:6px;height:6px;border-radius:50%;background:#888;" id="firestoreDot"></span><span id="firestoreText">Connecting...</span></div>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.js"></script>
+
+    <!-- Authentication Module (Supabase) -->
+    <script src="supabase-auth.js"></script>
+
+    <!-- Profile Module -->
+    <script src="profile.js"></script>
+
+    <!-- Startups Module -->
+    <script src="startup.js"></script>
+
+    <!-- Discovery Module -->
+    <script src="discovery.js"></script>
+
+    <!-- Main App Script -->
+    <script>
+        var $ = function(id) { return document.getElementById(id); };
+        var currentScore = 1240;
+
+         // ============================================================
+        // FUNCTION TO LOAD REAL USERS FROM SUPABASE
+        // ============================================================
+        async function loadRealUsersFromSupabase() {
+            if (!window.HorizonAuth || !window.HorizonAuth.getAllUsers) {
+                console.log("Supabase not available");
+                return [];
+            }
+            
+            try {
+                const users = await window.HorizonAuth.getAllUsers();
+                const currentUser = window.HorizonAuth.getCurrentUser();
+                const filteredUsers = users.filter(u => u.auth_id !== currentUser?.uid);
+                
+                return filteredUsers.map(u => ({
+                    uid: u.auth_id,
+                    name: u.display_name || u.name || 'Student',
+                    primarySkill: u.skills && u.skills.length > 0 ? u.skills[0] : 'Exploring',
+                    lookingFor: u.looking_for || 'Just exploring',
+                    startupStage: u.startup_stage || 'Not started',
+                    college: u.college || '',
+                    city: u.city || '',
+                    bio: u.bio || 'Student Founder',
+                    avatar: (u.display_name || 'U').charAt(0).toUpperCase(),
+                    needsTech: u.skills ? u.skills.includes('Developer') : false,
+                    needsDesign: u.skills ? u.skills.includes('Designer') : false,
+                    needsMarketing: u.skills ? u.skills.includes('Marketing') : false,
+                    needsBusiness: u.skills ? u.skills.includes('Business') : false
+                }));
+            } catch(e) {
+                console.error("Error loading users from Supabase:", e);
+                return [];
+            }
+        }
+
+
+        function getInitials(name) {
+            if (!name) return 'U';
+            return name.split(' ').map(function(w) { return w[0]; }).join('').substring(0,2).toUpperCase();
+        }
+
+        function updateAllScores(score) {
+            ['profileScore','detailScore'].forEach(function(id) {
+                var el = $(id);
+                if (el) el.textContent = score;
+            });
+            var fill = $('progressFill');
+            if (fill) fill.style.width = Math.min(100, (score / 2000) * 100) + '%';
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+            var target = $(screenId + 'Screen');
+            if (target) target.classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(function(item) {
+                item.classList.remove('active-nav');
+                if (item.getAttribute('data-screen') === screenId) item.classList.add('active-nav');
+            });
+            $('sideDrawer').classList.remove('open');
+            $('drawerOverlay').classList.remove('open');
+        }
+
+        function openDrawer() { $('sideDrawer').classList.add('open'); $('drawerOverlay').classList.add('open'); }
+        function closeDrawer() { $('sideDrawer').classList.remove('open'); $('drawerOverlay').classList.remove('open'); }
+
+        function animateScore(target) {
+            var start = currentScore;
+            var duration = 600;
+            var startTime = performance.now();
+            function animate(now) {
+                var elapsed = now - startTime;
+                var p = Math.min(1, elapsed / duration);
+                var ease = 1 - Math.pow(1 - p, 3);
+                updateAllScores(Math.floor(start + (target - start) * ease));
+                if (p < 1) requestAnimationFrame(animate);
+                else currentScore = target;
+            }
+            requestAnimationFrame(animate);
+        }
+
+        function showToast(msg, color) {
+            color = color || '#8AE3FF';
+            var t = document.createElement('div');
+            t.textContent = msg;
+            t.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:' + color + ';color:#000;padding:11px 18px;border-radius:28px;font-size:12px;font-weight:600;z-index:9999;pointer-events:none';
+            document.body.appendChild(t);
+            setTimeout(function() { t.remove(); }, 2500);
+        }
+
+        function updateUIForUser(user) {
+            if (window.HorizonAuth) window.HorizonAuth.setCurrentUser(user);
+            var displayName = user.displayName || 'Student';
+            var email = user.email || '';
+            var initials = getInitials(displayName);
+
+            $('drawerAvatar').textContent = initials;
+            $('drawerName').textContent = displayName;
+            $('drawerEmail').textContent = email;
+            $('profileAvatar').textContent = initials;
+            $('profileName').textContent = displayName;
+            $('profileEmail').textContent = email;
+
+            updateAllScores(currentScore);
+            $('loginScreen').classList.add('hidden');
+            $('authenticatedContent').style.display = 'block';
+
+            if (window.refreshDiscover) window.refreshDiscover();
+        }
+
+        document.addEventListener('horizon:userReady', function(e) {
+            updateUIForUser(e.detail);
+        });
+
+        document.querySelectorAll('.nav-item').forEach(function(item) {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                var id = item.getAttribute('data-screen');
+                if (id) showScreen(id);
+            });
+        });
+
+        $('menuBtn') && $('menuBtn').addEventListener('click', openDrawer);
+        $('drawerOverlay') && $('drawerOverlay').addEventListener('click', closeDrawer);
+        $('notifBtn') && $('notifBtn').addEventListener('click', function() { showToast('No new notifications'); });
+
+        updateAllScores(currentScore);
+        console.log('Horizon Ready!');
+    </script>
+</body>
+</html>
