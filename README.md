@@ -1,6 +1,6 @@
 # HORIZON — Student Founder Platform
 
-**Status: 🟡 Active Development — Pre-Alpha**
+**Status: 🟡 Active Development**
 
 A platform connecting student founders, builders, and collaborators. Find co-founders, join startups, or recruit team members — all within the student ecosystem.
 
