@@ -14,8 +14,8 @@ A platform connecting student founders, builders, and collaborators. Find co-fou
 | User profiles | 80% complete |
 | Startups listing & creation | Complete |
 | Smart discovery algorithm | 60% complete |
-| Real-time chat | ⏳ Not started |
-| Collaboration posts | ⏳ Not started |
+| Real-time chat | Not started |
+| Collaboration posts | Not started |
 | Horizon Score (gamification) | 30% complete |
 
 **Last updated:** June 12, 2026
