@@ -14,77 +14,8 @@ import {
   Wallet,
 } from 'lucide-react'
 
-// ── Brand logos ─────────────────────────────────────────────
-const BrandLogo = ({ children, size = 20, className = 'text-accent-highlight' }: { children: React.ReactNode; size?: number; className?: string }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>{children}</svg>
-)
-
-const LogoHermes = (p: { size?: number; className?: string }) => (
-  <BrandLogo {...p}><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.6"/><path d="M12 4v16M8 8l8 8M8 16l8-8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></BrandLogo>
-)
-const LogoOpenDesign = (p: { size?: number; className?: string }) => (
-  <BrandLogo {...p}><path d="M12 2l8 4.5v11L12 22l-8-4.5v-11L12 2z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/><path d="M12 7v10M7 9.5l5 3 5-3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></BrandLogo>
-)
-const LogoOpenCode = (p: { size?: number; className?: string }) => (
-  <BrandLogo {...p}><rect x="3" y="4" width="18" height="16" rx="3" stroke="currentColor" strokeWidth="1.5"/><path d="M8 10l3 2-3 2M13 14h3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></BrandLogo>
-)
-const LogoGithub = (p: { size?: number; className?: string }) => (
-  <BrandLogo {...p}><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.167 6.839 9.49.5.09.682-.217.682-.482 0-.237-.009-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.447-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.547 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.577.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></BrandLogo>
-)
-const LogoClaude = (p: { size?: number; className?: string }) => (
-  <BrandLogo {...p}><path d="M4 20L12 4l8 16H4z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round"/><path d="M8 16h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></BrandLogo>
-)
-const LogoChatGPT = (p: { size?: number; className?: string }) => (
-  <BrandLogo {...p}><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" stroke="currentColor" strokeWidth="1.5"/><path d="M8 12h8M12 8v8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></BrandLogo>
-)
-const LogoGemini = (p: { size?: number; className?: string }) => (
-  <BrandLogo {...p}><path d="M12 2L9.5 9.5 2 12l7.5 2.5L12 22l2.5-7.5L22 12l-7.5-2.5L12 2z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/></BrandLogo>
-)
-const LogoReplit = (p: { size?: number; className?: string }) => (
-  <BrandLogo {...p}><rect x="6" y="3" width="12" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.5"/><rect x="6" y="14" width="12" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.5"/><path d="M12 10v4" stroke="currentColor" strokeWidth="1.5"/></BrandLogo>
-)
-const LogoHuggingFace = (p: { size?: number; className?: string }) => (
-  <BrandLogo {...p}><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/><path d="M8 14c0 2.2 1.8 4 4 4s4-1.8 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><circle cx="9" cy="10" r="1" fill="currentColor"/><circle cx="15" cy="10" r="1" fill="currentColor"/></BrandLogo>
-)
-const LogoV0 = (p: { size?: number; className?: string }) => (
-  <BrandLogo {...p}><path d="M6 4l12 8-12 8V4z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/></BrandLogo>
-)
-const LogoBolt = (p: { size?: number; className?: string }) => (
-  <BrandLogo {...p}><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/></BrandLogo>
-)
-const LogoOllama = (p: { size?: number; className?: string }) => (
-  <BrandLogo {...p}><ellipse cx="12" cy="13" rx="7" ry="6" stroke="currentColor" strokeWidth="1.5"/><circle cx="8" cy="11" r="1.2" fill="currentColor"/><circle cx="16" cy="11" r="1.2" fill="currentColor"/><path d="M10 17c1 .5 3 .5 4 0" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><path d="M7 8c-1-2-1-4 0-5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><path d="M17 8c1-2 1-4 0-5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></BrandLogo>
-)
-const LogoCursor = (p: { size?: number; className?: string }) => (
-  <BrandLogo {...p}><path d="M4 4l16 6-7 3 4 7-4 2-3-6-6 7L4 4z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/></BrandLogo>
-)
-const LogoAntigravity = (p: { size?: number; className?: string }) => (
-  <BrandLogo {...p}><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/><path d="M12 6v8M8 12l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></BrandLogo>
-)
-const LogoCodex = (p: { size?: number; className?: string }) => (
-  <BrandLogo {...p}><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" strokeWidth="1.5"/><path d="M8 10l3 2-3 2M16 10l-3 2 3 2M12 8l-1 8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></BrandLogo>
-)
-const LogoWindsurf = (p: { size?: number; className?: string }) => (
-  <BrandLogo {...p}><path d="M3 18c3-6 6-6 9 0s6-6 9-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none"/></BrandLogo>
-)
-const LogoDeepSeek = (p: { size?: number; className?: string }) => (
-  <BrandLogo {...p}><rect x="4" y="4" width="16" height="16" rx="4" stroke="currentColor" strokeWidth="1.5"/><path d="M8 12h8M12 8v8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></BrandLogo>
-)
-const LogoAPI = (p: { size?: number; className?: string }) => (
-  <BrandLogo {...p}><path d="M4 8l4 4-4 4M20 8l-4 4 4 4M14 4l-4 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></BrandLogo>
-)
-const LogoTabnine = (p: { size?: number; className?: string }) => (
-  <BrandLogo {...p}><rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" strokeWidth="1.5"/><path d="M9 15V9l6 6V9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></BrandLogo>
-)
-const LogoOpenRouter = (p: { size?: number; className?: string }) => (
-  <BrandLogo {...p}><circle cx="6" cy="6" r="2.5" stroke="currentColor" strokeWidth="1.5"/><circle cx="18" cy="6" r="2.5" stroke="currentColor" strokeWidth="1.5"/><circle cx="12" cy="18" r="2.5" stroke="currentColor" strokeWidth="1.5"/><path d="M8.5 7.5l3.5 3M15.5 7.5l-3.5 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></BrandLogo>
-)
-const LogoGroq = (p: { size?: number; className?: string }) => (
-  <BrandLogo {...p}><rect x="6" y="3" width="12" height="18" rx="2" stroke="currentColor" strokeWidth="1.5"/><path d="M10 9h4M10 13h4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><circle cx="12" cy="17" r="1" fill="currentColor"/></BrandLogo>
-)
-
 type Method = {
-  icon: React.ElementType
+  icon: string
   name: string
   description: string
   cost: string
@@ -97,7 +28,7 @@ type Method = {
 
 const freeMethods: Method[] = [
   {
-    icon: LogoHermes,
+    icon: '/brand-logos/hermes.svg',
     name: 'Hermes AI',
     description: 'Open-source AI coding assistant by Nous Research. Runs locally or via free API. Great for small to medium projects with full privacy.',
     cost: 'Free',
@@ -115,7 +46,7 @@ const freeMethods: Method[] = [
     ],
   },
   {
-    icon: LogoOpenDesign,
+    icon: '/brand-logos/opendesign.svg',
     name: 'Open Design',
     description: 'Free AI-powered design-to-code platform. Describe your app idea in plain language and get real, deployable code with modern UI.',
     cost: 'Free',
@@ -133,7 +64,7 @@ const freeMethods: Method[] = [
     ],
   },
   {
-    icon: LogoOpenCode,
+    icon: '/brand-logos/opencode.svg',
     name: 'OpenCode',
     description: 'Free AI-powered CLI tool that turns natural language into production-ready code. Works directly in your terminal with any project.',
     cost: 'Free',
@@ -151,7 +82,7 @@ const freeMethods: Method[] = [
     ],
   },
   {
-    icon: LogoGithub,
+    icon: '/brand-logos/github.svg',
     name: 'GitHub Copilot Free',
     description: 'AI pair programmer from GitHub. Free for verified students, teachers, and open-source maintainers. Code completion and chat in IDE.',
     cost: 'Free',
@@ -169,7 +100,7 @@ const freeMethods: Method[] = [
     ],
   },
   {
-    icon: LogoClaude,
+    icon: '/brand-logos/claude.svg',
     name: 'Claude Free Tier',
     description: 'Free access to Claude AI by Anthropic. Powerful for architectural planning, code generation, app design discussions, and debugging.',
     cost: 'Free',
@@ -187,7 +118,7 @@ const freeMethods: Method[] = [
     ],
   },
   {
-    icon: LogoChatGPT,
+    icon: '/brand-logos/openai.svg',
     name: 'ChatGPT Free',
     description: 'Free access to GPT-4o-mini and GPT-4o (limited). Versatile for generating boilerplate, debugging, and learning new frameworks.',
     cost: 'Free',
@@ -205,7 +136,7 @@ const freeMethods: Method[] = [
     ],
   },
   {
-    icon: LogoGemini,
+    icon: '/brand-logos/googlegemini.svg',
     name: 'Google Gemini Free',
     description: 'Free access to Googles most capable AI model. Strong on code generation with 1M token context window for large codebases.',
     cost: 'Free',
@@ -223,7 +154,7 @@ const freeMethods: Method[] = [
     ],
   },
   {
-    icon: LogoReplit,
+    icon: '/brand-logos/replit.svg',
     name: 'Replit Free Tier',
     description: 'Online IDE with built-in AI. Free tier includes basic AI assistance for building and deploying apps directly in the browser.',
     cost: 'Free',
@@ -241,7 +172,7 @@ const freeMethods: Method[] = [
     ],
   },
   {
-    icon: LogoHuggingFace,
+    icon: '/brand-logos/huggingface.svg',
     name: 'Hugging Face Models',
     description: 'Free access to thousands of open-source AI models. Use CodeLlama, StarCoder, DeepSeek Coder for building apps without paying.',
     cost: 'Free',
@@ -259,7 +190,7 @@ const freeMethods: Method[] = [
     ],
   },
   {
-    icon: LogoV0,
+    icon: '/brand-logos/vercel.svg',
     name: 'V0 by Vercel Free',
     description: 'AI-powered UI generation by Vercel. Free tier lets you generate React components and pages from text prompts.',
     cost: 'Free',
@@ -277,7 +208,7 @@ const freeMethods: Method[] = [
     ],
   },
   {
-    icon: LogoBolt,
+    icon: '/brand-logos/stackblitz.svg',
     name: 'Bolt.new Free',
     description: 'AI full-stack web app generator. Free tier lets you build and deploy complete applications from a single prompt in your browser.',
     cost: 'Free',
@@ -295,7 +226,7 @@ const freeMethods: Method[] = [
     ],
   },
   {
-    icon: LogoOllama,
+    icon: '/brand-logos/ollama.svg',
     name: 'Ollama + Local LLMs',
     description: 'Run AI models completely free on your own hardware. CodeLlama, DeepSeek, Mistral, and Llama 3 run locally with full privacy.',
     cost: 'Free',
@@ -316,7 +247,7 @@ const freeMethods: Method[] = [
 
 const paidMethods: Method[] = [
   {
-    icon: LogoCursor,
+    icon: '/brand-logos/cursor.svg',
     name: 'Cursor AI',
     description: 'The most popular AI-native IDE. Superfast code generation with deep codebase understanding. Tab to accept, Ctrl+K to edit, chat with context.',
     cost: '$20',
@@ -334,7 +265,7 @@ const paidMethods: Method[] = [
     ],
   },
   {
-    icon: LogoClaude,
+    icon: '/brand-logos/claude.svg',
     name: 'Claude Code',
     description: 'Anthropics terminal-native AI coding agent. Handles complex multi-file edits, shell commands, and git operations through natural language.',
     cost: '$20',
@@ -352,7 +283,7 @@ const paidMethods: Method[] = [
     ],
   },
   {
-    icon: LogoAntigravity,
+    icon: '/brand-logos/antigravity.svg',
     name: 'Antigravity',
     description: 'Next-gen AI development platform. Generates complete, production-ready applications from high-level descriptions with built-in hosting.',
     cost: '$29',
@@ -370,7 +301,7 @@ const paidMethods: Method[] = [
     ],
   },
   {
-    icon: LogoCodex,
+    icon: '/brand-logos/codex.svg',
     name: 'Codex CLI (OpenAI)',
     description: 'OpenAIs terminal-based coding agent. Generates, tests, and iterates on code autonomously. Uses GPT-4 and o-series models for deep reasoning.',
     cost: '$20',
@@ -388,7 +319,7 @@ const paidMethods: Method[] = [
     ],
   },
   {
-    icon: LogoGithub,
+    icon: '/brand-logos/github.svg',
     name: 'GitHub Copilot Pro',
     description: 'Full-powered AI pair programming across all languages and IDEs. Unlimited completions, chat, and agents for pull request review.',
     cost: '$10',
@@ -406,7 +337,7 @@ const paidMethods: Method[] = [
     ],
   },
   {
-    icon: LogoV0,
+    icon: '/brand-logos/vercel.svg',
     name: 'V0 by Vercel Pro',
     description: 'Unlimited UI generation with Vercels AI. Generates production React components with Tailwind, shadcn/ui, and proper accessibility.',
     cost: '$20',
@@ -424,7 +355,7 @@ const paidMethods: Method[] = [
     ],
   },
   {
-    icon: LogoBolt,
+    icon: '/brand-logos/stackblitz.svg',
     name: 'Bolt.new Pro',
     description: 'Unlimited full-stack app generation. Faster generation, private projects, larger context, and priority deployment.',
     cost: '$20',
@@ -442,7 +373,7 @@ const paidMethods: Method[] = [
     ],
   },
   {
-    icon: LogoWindsurf,
+    icon: '/brand-logos/windsurf.svg',
     name: 'Windsurf IDE',
     description: 'AI-native IDE by Codeium. Deep contextual understanding of your codebase with automatic AI suggestions and multi-file editing.',
     cost: '$15',
@@ -460,7 +391,7 @@ const paidMethods: Method[] = [
     ],
   },
   {
-    icon: LogoReplit,
+    icon: '/brand-logos/replit.svg',
     name: 'Replit Core',
     description: 'Upgraded online IDE with powerful AI, faster compute, private Repls, and advanced deployment options for serious development.',
     cost: '$25',
@@ -478,7 +409,7 @@ const paidMethods: Method[] = [
     ],
   },
   {
-    icon: LogoClaude,
+    icon: '/brand-logos/claude.svg',
     name: 'Claude Max',
     description: 'Anthropics premium tier with the most powerful Claude models. Unlimited usage with priority access for complex, large-scale app development.',
     cost: '$100',
@@ -496,7 +427,7 @@ const paidMethods: Method[] = [
     ],
   },
   {
-    icon: LogoGemini,
+    icon: '/brand-logos/googlegemini.svg',
     name: 'Gemini Advanced',
     description: 'Googles premium AI tier with Gemini Ultra. Best integration with Google Cloud, Android, and Google Workspace for building apps.',
     cost: '$20',
@@ -514,7 +445,7 @@ const paidMethods: Method[] = [
     ],
   },
   {
-    icon: LogoCursor,
+    icon: '/brand-logos/cursor.svg',
     name: 'Cursor Business',
     description: 'Enterprise Cursor with admin controls, centralized billing, team-wide AI policy management, and enhanced privacy.',
     cost: '$40',
@@ -535,7 +466,7 @@ const paidMethods: Method[] = [
 
 const affordableMethods: Method[] = [
   {
-    icon: LogoDeepSeek,
+    icon: '/brand-logos/deepseek.svg',
     name: 'DeepSeek',
     description: 'Chinese AI lab offering extremely competitive pricing. DeepSeek-V3 and R1 models rival GPT-4 quality at a fraction of the cost. Best value in AI coding.',
     cost: '$0.50',
@@ -553,7 +484,7 @@ const affordableMethods: Method[] = [
     ],
   },
   {
-    icon: LogoAPI,
+    icon: '/brand-logos/claude.svg',
     name: 'Claude API (Pay-as-you-go)',
     description: 'Use Anthropics Claude models via API with no monthly commitment. Pay per token — ideal for variable or low-volume usage.',
     cost: '$3',
@@ -571,7 +502,7 @@ const affordableMethods: Method[] = [
     ],
   },
   {
-    icon: LogoGemini,
+    icon: '/brand-logos/googlegemini.svg',
     name: 'Gemini API (Google)',
     description: 'Googles most affordable AI API. Free tier includes 60 requests per minute. Paid tier is significantly cheaper than OpenAI.',
     cost: '$0',
@@ -589,7 +520,7 @@ const affordableMethods: Method[] = [
     ],
   },
   {
-    icon: LogoTabnine,
+    icon: '/brand-logos/tabnine.svg',
     name: 'Tabnine',
     description: 'AI code completion tool with on-device models and team customization. Affordable pricing with strong privacy guarantees.',
     cost: '$12',
@@ -607,7 +538,7 @@ const affordableMethods: Method[] = [
     ],
   },
   {
-    icon: LogoOpenRouter,
+    icon: '/brand-logos/openrouter.svg',
     name: 'OpenRouter',
     description: 'Unified API gateway for 200+ AI models. Pay per token across all major and open-source models. One API for everything.',
     cost: '$1',
@@ -625,7 +556,7 @@ const affordableMethods: Method[] = [
     ],
   },
   {
-    icon: LogoGroq,
+    icon: '/brand-logos/groq.svg',
     name: 'Groq Cloud',
     description: 'Lightning-fast inference provider with a generous free tier. Runs open-source models at speeds unmatched by any competitor.',
     cost: '$0',
@@ -730,7 +661,6 @@ export default function Building() {
           className="grid md:grid-cols-2 xl:grid-cols-3 gap-5"
         >
           {methods.map((method, index) => {
-            const MethodIcon = method.icon
             return (
               <motion.div
                 key={method.name}
@@ -741,7 +671,7 @@ export default function Building() {
               >
                 <div className="flex items-start gap-3 mb-4">
                   <div className="w-10 h-10 rounded-xl bg-accent-primary/10 flex items-center justify-center flex-shrink-0">
-                    <MethodIcon size={20} className="text-accent-highlight" />
+                    <img src={method.icon} alt={method.name} className="w-5 h-5" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-white font-semibold text-sm leading-snug mb-1">{method.name}</h3>
@@ -814,7 +744,7 @@ export default function Building() {
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-xl bg-accent-primary/15 flex items-center justify-center">
-                      {React.createElement(selectedMethod.icon, { size: 22, className: 'text-accent-highlight' })}
+                      <img src={selectedMethod.icon} alt={selectedMethod.name} className="w-[22px] h-[22px]" />
                     </div>
                     <div>
                       <h2 className="text-lg font-bold text-white">{selectedMethod.name}</h2>
