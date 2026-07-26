@@ -25,7 +25,7 @@ const navItems = [
   { name: 'The Idea Lab', href: '/ideation', icon: Lightbulb },
   { name: 'Building', href: '/design', icon: Brush },
   { name: 'Resources', href: '/resources', icon: Search },
-  { name: 'Deployment Hub', href: '/deployment', icon: Cloud },
+  { name: 'Deployment', href: '/deployment', icon: Cloud },
   { name: 'Marketing Hustle', href: '/marketing', icon: Megaphone },
   { name: 'Funding Vault', href: '/funding', icon: Wallet },
   { name: 'Community', href: '/community', icon: Users },
